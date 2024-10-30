@@ -1,3 +1,4 @@
+import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -11,28 +12,21 @@ class TestCatalogPage:
     PRODUCT_PRICE_LOCATOR = (By.XPATH, "//*[@class='price-new']")
     PRODUCT_DESCRIPTION_LOCATOR = (By.XPATH, "//*[@class='tab-content']")
 
+    locators_list = [
+        PRODUCT_NAME_LOCATOR,
+        ADD_TO_CART_BUTTON_LOCATOR,
+        PRODUCT_NAME_LOCATOR,
+        PRODUCT_PRICE_LOCATOR,
+        PRODUCT_DESCRIPTION_LOCATOR
+    ]
+
     def open_product_card_page(self, browser):
         browser.get(f"{browser.base_url}{self.URI_PRODUCT_CARD}")
 
     def check_element_visible(self, browser, locator):
         WebDriverWait(browser, 10, poll_frequency=1).until(EC.visibility_of_element_located(locator))
 
-    def test_product_image_visible(self, browser):
+    @pytest.mark.parametrize("locator", locators_list)
+    def test_check_visible_catalog_elements(self, browser, locator):
         self.open_product_card_page(browser)
-        self.check_element_visible(browser, self.PRODUCT_IMAGE_LOCATOR)
-
-    def test_add_to_cart_button_visible(self, browser):
-        self.open_product_card_page(browser)
-        self.check_element_visible(browser, self.ADD_TO_CART_BUTTON_LOCATOR)
-
-    def test_product_name_visible(self, browser):
-        self.open_product_card_page(browser)
-        self.check_element_visible(browser, self.PRODUCT_NAME_LOCATOR)
-
-    def test_product_price_visible(self, browser):
-        self.open_product_card_page(browser)
-        self.check_element_visible(browser, self.PRODUCT_PRICE_LOCATOR)
-
-    def test_product_description_visible(self, browser):
-        self.open_product_card_page(browser)
-        self.check_element_visible(browser, self.PRODUCT_DESCRIPTION_LOCATOR)
+        self.check_element_visible(browser, locator)
