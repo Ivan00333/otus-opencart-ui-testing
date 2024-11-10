@@ -6,6 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 class TestCatalogPage:
     URI_CATALOG = '/en-gb/catalog/tablet'
+
     SORTING_MENU_LOCATOR = (By.XPATH, "//*[@id='display-control']")
     CATALOG_LIST_LOCATOR = (By.XPATH, "//*[@class='list-group mb-3']")
     PRODUCTS_TITLE_LOCATOR = (By.XPATH, "//div/h2[text()='Tablets']")
