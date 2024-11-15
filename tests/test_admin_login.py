@@ -1,7 +1,7 @@
-import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+
 
 class TestAdminLogin:
     URI_ADMIN_LOGIN_PAGE = 'administration'
@@ -33,6 +33,3 @@ class TestAdminLogin:
         self.check_element_visible(browser, self.ADMIN_NAME_LOCATOR)
         self.get_find_element(browser, self.BUTTON_LOGOUT_LOCATOR).click()
         self.check_element_visible(browser, self.BUTTON_LOGIN_LOCATOR)
-
-
-

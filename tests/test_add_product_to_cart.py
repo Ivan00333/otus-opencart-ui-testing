@@ -1,6 +1,3 @@
-import time
-
-import pytest
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -46,4 +43,4 @@ class TestAddToCart:
         price_product_in_cart = self.get_find_element(browser, self.PRICE_PRODUCT_IN_CART_LOCATOR).text
 
         assert price_product[0] == price_product_in_cart[0], f"Валюта в корзине должна быть {price_product[0]}"
-        assert float(price_product[1:]) == float(price_product_in_cart[1:]), f"Цена продукта отличается от цены в корзине"
+        assert float(price_product[1:]) == float(price_product_in_cart[1:]), "Цена продукта отличается от цены в корзине"

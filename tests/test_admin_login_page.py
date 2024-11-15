@@ -31,4 +31,3 @@ class TestAdminLoginPage:
     def test_check_visible_admin_login_elements(self, browser, locator):
         self.open_admin_login_page(browser)
         self.check_element_visible(browser, locator)
-

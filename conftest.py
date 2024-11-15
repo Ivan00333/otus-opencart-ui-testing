@@ -6,6 +6,7 @@ def pytest_addoption(parser):
     parser.addoption("--browser", default="chrome")
     parser.addoption("--url", default='http://192.168.0.10:8081/')
 
+
 @pytest.fixture(scope="class")
 def browser(pytestconfig):
     browser_name = pytestconfig.getoption("browser")
@@ -22,5 +23,3 @@ def browser(pytestconfig):
 
     yield driver
     driver.close()
-
-
