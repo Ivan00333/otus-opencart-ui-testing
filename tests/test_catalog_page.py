@@ -1,3 +1,4 @@
+
 import pytest
 from pages.catalog_page import CatalogPage
 from locators.locators import CatalogPageLocators

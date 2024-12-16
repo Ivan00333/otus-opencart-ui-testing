@@ -9,7 +9,7 @@ class BasePage:
     def __init__(self, driver):
         self.driver = driver
 
-    def open(self, url : str):
+    def open(self, url: str):
         self.driver.get(url)
 
     def get_find_element(self, locator: str, timeout=5):
@@ -31,7 +31,7 @@ class BasePage:
             actions = ActionChains(self.driver)
             actions.move_to_element(element).perform()
         except Exception as e:
-            print(f"Error moving to element")
+            print("Error moving to element")
 
     def move_to_element_and_click(self, locator: str, timeout=5):
         try:
@@ -43,5 +43,4 @@ class BasePage:
 
     def input(self, locator: str, data: str):
         self.get_find_element(locator).send_keys(data)
-
 

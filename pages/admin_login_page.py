@@ -12,4 +12,3 @@ class AdminLoginPage(BasePage):
         self.input(AdminLoginPageLocators.INPUT_USERNAME_LOCATOR, AdminAuth.ADMIN_USERNAME)
         self.input(AdminLoginPageLocators.INPUT_PASSWORD_LOCATOR, AdminAuth.ADMIN_PASSWORD)
         self.click(AdminLoginPageLocators.BUTTON_LOGIN_LOCATOR)
-    

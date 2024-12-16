@@ -29,4 +29,3 @@ class AddToCart(BasePage):
 
         assert price_product[0] == price_product_in_cart[0], f"Валюта в корзине должна быть {price_product[0]}"
         assert float(price_product[1:]) == float(price_product_in_cart[1:]), "Цена продукта отличается от цены в корзине"
-

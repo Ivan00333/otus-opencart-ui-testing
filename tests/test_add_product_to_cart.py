@@ -9,4 +9,3 @@ class TestAddToCart:
         page.add_product_to_cart()
         page.check_elements_in_cart()
         page.check_price_in_cart()
-

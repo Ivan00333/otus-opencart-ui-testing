@@ -1,7 +1,6 @@
 
 import pytest
 from pages.home_page import HomePage
-from locators.locators import HomePageLocators
 from data.constants import Currency
 
 

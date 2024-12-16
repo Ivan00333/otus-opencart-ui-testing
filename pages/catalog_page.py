@@ -29,4 +29,3 @@ class CatalogPage(BasePage):
         elif currency == "USD":
             assert price_product.text[:1] == '$', "Валюта отличается от выбранной"
             assert float(price_product.text[1:]) == ref_price_usd, "Цена не соответствует выбранной валюте"
-
