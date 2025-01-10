@@ -27,6 +27,18 @@ class AdminPageLocators:
     BUTTON_LOGIN_LOCATOR = (By.XPATH, "//div[@class='text-end']/button[@type='submit']")
     ADMIN_NAME_LOCATOR = (By.XPATH, "//span[contains(text(), 'John Doe')]")
     BUTTON_LOGOUT_LOCATOR = (By.XPATH, "//span[text()='Logout']")
+    CATALOG_LOCATOR = (By.XPATH, "//a[text()=' Catalog']")
+    PRODUCTS_LOCATOR = (By.XPATH, "//a[text()='Products']")
+    ADD_PRODUCTS_BUTTON_LOCATOR = (By.CSS_SELECTOR, ".btn .fa-plus")
+    FIELD_PRODUCT_NAME_LOCATOR = (By.XPATH, "//input[@placeholder='Product Name']")
+    DATA_BUTTON_LOCATOR = (By.XPATH, "//a[text()='Data']")
+    FIELD_MODEL_LOCATOR = (By.XPATH, "//input[@placeholder='Model']")
+    FIELD_META_TAG_LOCATOR = (By.XPATH, "//input[@placeholder='Meta Tag Title']")
+    SEO_BUTTON_LOCATOR = (By.XPATH, "//a[text()='SEO']")
+    FIELD_KEYWORD_LOCATOR = (By.XPATH, "//input[@placeholder='Keyword']")
+    SAVE_PRODUCT_BUTTON_LOCATOR = (By.CSS_SELECTOR, ".fa-floppy-disk")
+    CHECKBOX_LOCATOR = (By.XPATH, "//tbody/tr[1]//input[@type='checkbox']")
+    DELETE_PRODUCT_BUTTON_LOCATOR = (By.CSS_SELECTOR, ".btn-danger")
 
 
 class AddToCartLocators:
@@ -99,6 +111,8 @@ class RegisterPageLocators:
     EMAIL_LOCATOR = (By.XPATH, "//input[@id='input-email']")
     PASSWORD_LOCATOR = (By.XPATH, "//input[@id='input-password']")
     CONTINUE_BUTTON_LOCATOR = (By.XPATH, "//button[text()='Continue']")
+    SUCCESS_REGISTRATION_MESSAGE = (By.XPATH, "//h1[text()='Your Account Has Been Created!']")
+    AGREE_POLICY_LOCATOR = (By.XPATH, "//input[@name='agree']")
 
     locators_list = [
         FIRST_NAME_LOCATOR,
