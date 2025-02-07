@@ -1,3 +1,4 @@
+import allure
 from faker import Faker
 from pages.base_page import BasePage
 from data.constants import Urls
@@ -5,9 +6,11 @@ from locators.locators import RegisterPageLocators as rpl
 
 
 class RegisterPage(BasePage):
+    @allure.step("Открытие страницы регистрации")
     def open_register_page(self):
         self.open(Urls.URL_REGISTER_PAGE)
 
+    @allure.step("Заполнение полей регистрации пользователя")
     def fill_registration_user_form(self):
         fake = Faker()
         first_name = fake.first_name()
@@ -22,6 +25,6 @@ class RegisterPage(BasePage):
         self.click(rpl.AGREE_POLICY_LOCATOR)
         self.click(rpl.CONTINUE_BUTTON_LOCATOR)
 
-
+    @allure.step("Проверка, что регистрация прошла успешно")
     def check_success_registration(self):
         self.check_element_visible(rpl.SUCCESS_REGISTRATION_MESSAGE)

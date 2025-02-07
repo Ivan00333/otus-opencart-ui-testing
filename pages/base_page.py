@@ -34,7 +34,7 @@ class BasePage:
         wait(self.driver, timeout, poll_frequency=1).until(EC.visibility_of_element_located(locator))
 
     def check_elements_visible(self, locators_list: list, timeout=5):
-        self.logger.info(f"check visible elements in list {locators_list}")
+        self.logger.info(f"Check visible elements in list {locators_list}")
         for locator in locators_list:
             self.logger.info(f"Check element visible {locator}")
             wait(self.driver, timeout, poll_frequency=1).until(EC.visibility_of_element_located(locator))

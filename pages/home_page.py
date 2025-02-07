@@ -1,3 +1,4 @@
+import allure
 
 from data.constants import Urls
 from pages.base_page import BasePage
@@ -6,18 +7,22 @@ from selenium.webdriver.common.by import By
 
 
 class HomePage(BasePage):
+    @allure.step("Открытие домашней страницы")
     def open_home_page(self):
         self.open(Urls.BASE_URL)
 
+    @allure.step("Проверка элемента {locator}")
     def check_element(self, locator):
         self.check_element_visible(locator)
 
+    @allure.step("Выбор валюты {currency}")
     def choice_currency(self, currency):
         self.click(locators.CURRENCY_BUTTON_LOCATOR)
         currency_locator = (By.XPATH, f"//li/a[@href='{currency}']")
         currency = self.get_find_element(currency_locator)
         currency.click()
 
+    @allure.step("Проверка, что установлена валюта {currency}")
     def check_curency(self, currency):
         price_product = self.get_find_element(locators.PRICE_PRODUCT_LOCATOR)
         self.move_to_element(locators.PRICE_PRODUCT_LOCATOR)

@@ -1,15 +1,19 @@
+import allure
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 from locators.locators import AdminPageLocators
 
 
 class AdminPage(BasePage):
+    @allure.step("Проверка, что администартор авторизован")
     def check_admin_auth(self):
         self.check_element_visible(AdminPageLocators.ADMIN_NAME_LOCATOR)
 
+    @allure.step("Выход")
     def logout(self):
         self.click(AdminPageLocators.BUTTON_LOGOUT_LOCATOR)
 
+    @allure.step("Добавление нового продукта")
     def add_new_product(self):
         self.click(AdminPageLocators.CATALOG_LOCATOR)
         self.click(AdminPageLocators.PRODUCTS_LOCATOR)
@@ -22,11 +26,12 @@ class AdminPage(BasePage):
         self.input(AdminPageLocators.FIELD_KEYWORD_LOCATOR, "A-Test")
         self.click(AdminPageLocators.SAVE_PRODUCT_BUTTON_LOCATOR)
 
-
+    @allure.step("Прверка списка продуктов")
     def check_product_in_list(self, product_name: str):
         self.click(AdminPageLocators.PRODUCTS_LOCATOR)
         self.check_element_visible((By.XPATH, f"//td[contains(text(), {product_name})]"))
 
+    @allure.step("Удаление продукта")
     def delete_product(self):
         self.click(AdminPageLocators.CATALOG_LOCATOR)
         self.click(AdminPageLocators.PRODUCTS_LOCATOR)
