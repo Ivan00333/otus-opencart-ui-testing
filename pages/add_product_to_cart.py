@@ -1,3 +1,4 @@
+import allure
 
 from pages.base_page import BasePage
 from locators.locators import AddToCartLocators
@@ -13,16 +14,20 @@ class AddToCart(BasePage):
         locators.PRICE_PRODUCT_IN_CART_LOCATOR
     ]
 
+    @allure.step("Открытие домашней страницы")
     def open_home_page(self):
         self.open(Urls.BASE_URL)
 
+    @allure.step("Добавление товара в корзину")
     def add_product_to_cart(self):
         self.move_to_element_and_click(self.locators.ADD_TO_CART_BUTTON_LOCATOR, timeout=10)
         self.move_to_element_and_click(self.locators.CART_BUTTON_LOCATOR)
 
+    @allure.step("Проверка, что товар в корзине")
     def check_elements_in_cart(self):
         self.check_elements_visible(self.list_locators)
 
+    @allure.step("Проверка соответствия цены товара в корзине")
     def check_price_in_cart(self):
         price_product = self.get_find_element(self.locators.PRICE_PRODUCT_LOCATOR).text
         price_product_in_cart = self.get_find_element(self.locators.PRICE_PRODUCT_IN_CART_LOCATOR).text
