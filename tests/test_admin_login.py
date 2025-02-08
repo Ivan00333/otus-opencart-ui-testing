@@ -1,9 +1,11 @@
+import allure
 
 from pages.admin_login_page import AdminLoginPage
 from pages.admin_page import AdminPage
 
 
-class TestAdminLogin:  
+class TestAdminLogin:
+    @allure.title("Проверка авторизации администратора")
     def test_admin_auth(self, driver):
         admin_login_page = AdminLoginPage(driver)
         admin_page = AdminPage(driver)
