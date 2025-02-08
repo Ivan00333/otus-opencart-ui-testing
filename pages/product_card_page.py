@@ -1,7 +1,7 @@
 import allure
-
 from pages.base_page import BasePage
 from data.constants import Urls
+
 
 class ProductCardPage(BasePage):
     @allure.step("Открытие карточки продукта")

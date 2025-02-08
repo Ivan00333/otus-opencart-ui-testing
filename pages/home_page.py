@@ -1,5 +1,4 @@
 import allure
-
 from data.constants import Urls
 from pages.base_page import BasePage
 from locators.locators import HomePageLocators as locators
