@@ -1,4 +1,6 @@
 import json
+from pymysql.cursors import DictCursor
+import pymysql
 import pytest
 from selenium import webdriver
 import logging
@@ -27,6 +29,36 @@ def pytest_addoption(parser):
         action="store_true",
         default=False,
         help="Record video when running via Selenoid"
+    )
+    parser.addoption(
+        "--db_host",
+        action="store",
+        default="127.0.0.1",
+        help="Database host"
+    )
+    parser.addoption(
+        "--db_port",
+        action="store",
+        default="3306",
+        help="Database port"
+    )
+    parser.addoption(
+        "--db_user",
+        action="store",
+        default="bn_opencart",
+        help="Database user"
+    )
+    parser.addoption(
+        "--db_password",
+        action="store",
+        default="",
+        help="Database password"
+    )
+    parser.addoption(
+        "--db_name",
+        action="store",
+        default="bitnami_opencart",
+        help="Database name"
     )
     parser.addoption(
         "--headed",
@@ -123,3 +155,25 @@ def driver(pytestconfig, request):
 
     request.addfinalizer(teardown)
     return driver
+
+
+@pytest.fixture(scope="session")
+def connection(request):
+    host = request.config.getoption("--db_host")
+    port = int(request.config.getoption("--db_port"))
+    user = request.config.getoption("--db_user")
+    password = request.config.getoption("--db_password")
+    db_name = request.config.getoption("--db_name")
+
+    conn = pymysql.connect(
+        host=host,
+        user=user,
+        password=password,
+        port=port,
+        database=db_name,
+        charset="utf8mb4",
+        cursorclass=DictCursor
+    )
+
+    yield conn
+    conn.close()
