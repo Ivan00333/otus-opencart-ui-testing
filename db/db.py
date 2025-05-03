@@ -99,7 +99,6 @@ class Db(Logger):
         assert isinstance(customer_id, int), f"Ожидали целочисленный ID, получили {type(customer_id)}"
         assert customer_id > 0, f"Customer_id равен = {customer_id}"
 
-
     def delete_user_by_id(self, user_id: int):
         self.logger.info(f"Удаление пользователя из таблицы bitnami_opencart.oc_customer с id - {user_id}")
         sql = (
@@ -111,5 +110,4 @@ class Db(Logger):
             cursor.execute(sql, (user_id))
             self.connection.commit()
             self.logger.info(f"Пользователь с id={user_id} удален")
-
 
