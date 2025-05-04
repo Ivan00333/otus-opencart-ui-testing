@@ -46,7 +46,7 @@ class Db(Logger):
 
         return user_data
 
-    def create_user(self, user_data):
+    def create_user_in_db(self, user_data):
         self.logger.info("Создание пользователя в таблице bitnami_opencart.oc_customer")
         columns = ", ".join(user_data.keys())
         values = ", ".join(['%s'] * len(user_data))
@@ -60,6 +60,8 @@ class Db(Logger):
             cursor.execute(sql, tuple(user_data.values()))
             self.connection.commit()
             new_id = cursor.lastrowid
+
+        self.logger.info(f"Создан пользователь с id = {new_id}")
 
         return new_id
 
@@ -77,7 +79,7 @@ class Db(Logger):
 
         return row
 
-    def check_created_userIn_db(self, user_data_db: str, user_data: str):
+    def check_created_user_in_db(self, user_data_db: str, user_data: str):
         exclude = {"customer_id", "date_added"}
         user_data_from_db = {k:v for k, v in user_data_db.items() if k not in exclude}
 
@@ -99,6 +101,11 @@ class Db(Logger):
         assert isinstance(customer_id, int), f"Ожидали целочисленный ID, получили {type(customer_id)}"
         assert customer_id > 0, f"Customer_id равен = {customer_id}"
 
+    def check_updated_user(self, update_data: dict, data_from_db: dict):
+        for key, val in update_data.items():
+            value = data_from_db.get(key)
+            assert value == val, f"{key!r}: ожидали {val!r}, получили {value!r}"
+
     def delete_user_by_id(self, user_id: int):
         self.logger.info(f"Удаление пользователя из таблицы bitnami_opencart.oc_customer с id - {user_id}")
         sql = (
@@ -110,4 +117,36 @@ class Db(Logger):
             cursor.execute(sql, (user_id))
             self.connection.commit()
             self.logger.info(f"Пользователь с id={user_id} удален")
+            return cursor.rowcount
+
+    def update_user(self, user_id: int, parameters_to_change: dict, ):
+        self.logger.info(f"Изменение пользователя с id = {user_id}")
+        if not parameters_to_change:
+            raise ValueError("Пустой словарь updates")
+
+        set_vol = ", ".join(f"{key} = %s" for key in parameters_to_change.keys())
+
+        sql = (
+            "UPDATE bitnami_opencart.oc_customer "
+            f"SET {set_vol} "
+            "WHERE customer_id = %s"
+        )
+
+        params = list(parameters_to_change.values()) + [user_id]
+
+        with self.connection.cursor() as cursor:
+            cursor.execute(sql, params)
+            self.connection.commit()
+
+        return cursor.rowcount
+
+
+    def get_rows_from_db(self, rows_count: int):
+        sql = "SELECT * FROM bitnami_opencart.oc_customer LIMIT %s";
+
+        with self.connection.cursor() as cursor:
+            cursor.execute(sql, (rows_count))
+            rows = cursor.fetchall()
+
+            return rows
 
