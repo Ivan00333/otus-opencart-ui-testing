@@ -1,4 +1,3 @@
-import pytest
 from db.db import Db
 
 
@@ -55,7 +54,6 @@ class TestDb:
 
         row = db.get_user_from_db_by_id(user_id)
         assert row is None, f"Запись c customer_id={user_id} есть в таблице"
-
 
     def test_delete_user_negative(self, connection):
         db = Db(connection, "test_delete_user_negative")

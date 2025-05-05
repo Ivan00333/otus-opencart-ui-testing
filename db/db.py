@@ -1,7 +1,4 @@
 import re
-
-import pytest
-from conftest import connection
 from logger.logger import Logger
 from pages.register_page import RegisterPage
 import bcrypt
@@ -13,6 +10,7 @@ class Db(Logger):
         self.connection = connection
         self.user = RegisterPage.create_user()
         self.logger = self._config_logger(test_name)
+        self.customer_table = 'bitnami_opencart.oc_customer'
 
     def create_user_data(self):
         self.logger.info("Создание данных пользователя для БД")
@@ -20,7 +18,7 @@ class Db(Logger):
 
         salt = bcrypt.gensalt(rounds=10)
         hashed = bcrypt.hashpw(new_user["password"].encode(), salt)
-        hashed_password =hashed.decode()
+        hashed_password = hashed.decode()
 
         now = datetime.now()
         formatted = now.strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
@@ -47,11 +45,11 @@ class Db(Logger):
         return user_data
 
     def create_user_in_db(self, user_data):
-        self.logger.info("Создание пользователя в таблице bitnami_opencart.oc_customer")
+        self.logger.info(f"Создание пользователя в таблице {self.customer_table}")
         columns = ", ".join(user_data.keys())
         values = ", ".join(['%s'] * len(user_data))
 
-        sql = ("INSERT INTO bitnami_opencart.oc_customer "
+        sql = (f"INSERT INTO {self.customer_table} "
                f"({columns} )"
                f"VALUES ({values});"
                )
@@ -66,10 +64,10 @@ class Db(Logger):
         return new_id
 
     def get_user_from_db_by_id(self, user_id: int):
-        self.logger.info(f"Получение строки из таблицы bitnami_opencart.oc_customer по id - {user_id}")
+        self.logger.info(f"Получение строки из таблицы {self.customer_table} по id - {user_id}")
         sql = (
             "SELECT * "
-            "FROM bitnami_opencart.oc_customer "
+            f"FROM {self.customer_table} "
             "WHERE customer_id = %s"
         )
 
@@ -81,7 +79,7 @@ class Db(Logger):
 
     def check_created_user_in_db(self, user_data_db: str, user_data: str):
         exclude = {"customer_id", "date_added"}
-        user_data_from_db = {k:v for k, v in user_data_db.items() if k not in exclude}
+        user_data_from_db = {k: v for k, v in user_data_db.items() if k not in exclude}
 
         for key, val in user_data_from_db.items():
             value = user_data.get(key)
@@ -89,7 +87,7 @@ class Db(Logger):
             assert value == val, f"{key!r}: ожидали {val!r}, получили {value!r}"
 
         dt = user_data_db["date_added"]
-        date_from_db= dt.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+        date_from_db = dt.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
 
         pattern = re.compile(r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}$")
         assert pattern.match(date_from_db), (
@@ -107,9 +105,9 @@ class Db(Logger):
             assert value == val, f"{key!r}: ожидали {val!r}, получили {value!r}"
 
     def delete_user_by_id(self, user_id: int):
-        self.logger.info(f"Удаление пользователя из таблицы bitnami_opencart.oc_customer с id - {user_id}")
+        self.logger.info(f"Удаление пользователя из таблицы {self.customer_table} с id - {user_id}")
         sql = (
-            "DELETE FROM bitnami_opencart.oc_customer "
+            f"DELETE FROM {self.customer_table} "
             "WHERE customer_id = %s"
         )
 
@@ -127,7 +125,7 @@ class Db(Logger):
         set_vol = ", ".join(f"{key} = %s" for key in parameters_to_change.keys())
 
         sql = (
-            "UPDATE bitnami_opencart.oc_customer "
+            f"UPDATE {self.customer_table} "
             f"SET {set_vol} "
             "WHERE customer_id = %s"
         )
@@ -140,13 +138,11 @@ class Db(Logger):
 
         return cursor.rowcount
 
-
     def get_rows_from_db(self, rows_count: int):
-        sql = "SELECT * FROM bitnami_opencart.oc_customer LIMIT %s";
+        sql = f"SELECT * FROM {self.customer_table} LIMIT %s"
 
         with self.connection.cursor() as cursor:
             cursor.execute(sql, (rows_count))
             rows = cursor.fetchall()
 
             return rows
-
