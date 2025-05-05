@@ -6,7 +6,29 @@ import allure
 
 
 def pytest_addoption(parser):
-    parser.addoption("--browser", default="chrome")
+    parser.addoption(
+        "--browser",
+        choices=["chrome", "firefox", "opera"],
+        default="firefox",
+        help="Browser to run tests: chrome, firefox, opera"
+    )
+    parser.addoption(
+        "--selenoid_url",
+        default=None,
+        help="URL of Selenoid server (e.g. http://localhost:4444/wd/hub). If not set, local browser is used."
+    )
+    parser.addoption(
+        "--browser_version",
+        default = None,
+        help="Browser version to use (e.g. 124.0). If not set, Selenoid default is used."
+    )
+    parser.addoption(
+        "--enable_video",
+        action="store_true",
+        default=False,
+        help="Record video when running via Selenoid"
+    )
+
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item):
@@ -22,15 +44,41 @@ def pytest_runtest_makereport(item):
         else:
             item.parent.failed_tests.discard(item.nodeid)
 
+
 @pytest.fixture(scope="class")
 def driver(pytestconfig, request):
     browser_name = pytestconfig.getoption("browser")
-    driver = None
+    selenoid_url = pytestconfig.getoption("selenoid_url")
+    browser_version = pytestconfig.getoption("browser_version")
+    record_video = pytestconfig.getoption("enable_video")
 
-    if browser_name in ["ch", "chrome"]:
-        driver = webdriver.Chrome()
-    if browser_name in ["ff", "firefox"]:
-        driver = webdriver.Firefox()
+    if browser_name == "chrome":
+        options = webdriver.ChromeOptions()
+    elif browser_name == "firefox":
+        options = webdriver.FirefoxOptions()
+    else:
+        raise ValueError(f"Unsupported browser: {browser_name}")
+
+    if selenoid_url:
+        options.set_capability("browserName", browser_name)
+        if browser_version:
+            options.set_capability("browserVersion", browser_version)
+        selenoid_opts = {"enableVNC": True, "enableLog": True}
+        if record_video:
+            selenoid_opts["enableVideo"] = True
+        options.set_capability("selenoid:options", selenoid_opts)
+
+        driver = webdriver.Remote(
+            command_executor=selenoid_url,
+            options=options
+        )
+    else:
+        if browser_name == "chrome":
+            driver = webdriver.Chrome(options=options)
+        elif browser_name == "firefox":
+            driver = webdriver.Firefox(options=options)
+        elif browser_name == "opera":
+            driver = webdriver.Opera(options=options)
 
     driver.maximize_window()
 
