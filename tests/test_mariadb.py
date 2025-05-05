@@ -8,7 +8,6 @@ class TestDb:
         user_data = db.create_user_data()
         id = db.create_user_in_db(user_data)
         user_form_db = db.get_user_from_db_by_id(user_id=id)
-        print(user_data)
         db.check_created_user_in_db(user_form_db, user_data)
 
     def test_update_user(self, connection):
