@@ -2,13 +2,12 @@
 from selenium.webdriver import ActionChains
 from selenium.webdriver.support.wait import WebDriverWait as wait
 from selenium.webdriver.support import expected_conditions as EC
-from logger.logger import Logger
 
 
-class BasePage(Logger):
-    def __init__(self, driver):
+class BasePage():
+    def __init__(self, driver, logger):
         self.driver = driver
-        self.logger = self._config_logger(self.driver.test_name)
+        self.logger = logger
 
     def open(self, url: str):
         self.logger.info(f"Open page {url}")
