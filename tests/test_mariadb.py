@@ -1,4 +1,3 @@
-from db.db import Db
 
 
 class TestDb:
