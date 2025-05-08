@@ -1,39 +1,13 @@
-import logging
-import os
+
 from selenium.webdriver import ActionChains
 from selenium.webdriver.support.wait import WebDriverWait as wait
 from selenium.webdriver.support import expected_conditions as EC
 
 
-class BasePage:
-    def __init__(self, driver):
+class BasePage():
+    def __init__(self, driver, logger):
         self.driver = driver
-        self.logger = self.__config_logger()
-
-    def __config_logger(self):
-        logger = logging.getLogger(self.__class__.__name__)
-        logger.setLevel(logging.INFO)
-
-        if logger.hasHandlers():
-            logger.handlers.clear()
-
-        formatter = logging.Formatter(
-            "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S"
-        )
-
-        os.makedirs("logs", exist_ok=True)
-        log_file = f"logs/{self.driver.test_name}.log"
-
-        file_handler = logging.FileHandler(log_file, encoding="utf-8")
-        file_handler.setFormatter(formatter)
-        logger.addHandler(file_handler)
-
-        console_handler = logging.StreamHandler()
-        console_handler.setFormatter(formatter)
-        logger.addHandler(console_handler)
-
-        return logger
+        self.logger = logger
 
     def open(self, url: str):
         self.logger.info(f"Open page {url}")
