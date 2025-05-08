@@ -28,6 +28,12 @@ def pytest_addoption(parser):
         default=False,
         help="Record video when running via Selenoid"
     )
+    parser.addoption(
+        "--headed",
+        action="store_true",
+        default=False,
+        help="Run browser with UI locally (headed). By default runs headless."
+    )
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
@@ -51,6 +57,7 @@ def driver(pytestconfig, request):
     selenoid_url = pytestconfig.getoption("selenoid_url")
     browser_version = pytestconfig.getoption("browser_version")
     record_video = pytestconfig.getoption("enable_video")
+    headed = pytestconfig.getoption("headed")
 
     if browser_name == "chrome":
         options = webdriver.ChromeOptions()
@@ -74,10 +81,19 @@ def driver(pytestconfig, request):
         )
     else:
         if browser_name == "chrome":
+            if not headed:
+                options.add_argument("--headless")
+                options.add_argument("--disable-gpu")
+                options.add_argument("--no-sandbox")
+                options.add_argument("--disable-dev-shm-usage")
             driver = webdriver.Chrome(options=options)
         elif browser_name == "firefox":
+            if not headed:
+                options.add_argument("--headless")
             driver = webdriver.Firefox(options=options)
         elif browser_name == "opera":
+            if not headed:
+                options.add_argument("--headless")
             driver = webdriver.Opera(options=options)
 
     driver.maximize_window()
