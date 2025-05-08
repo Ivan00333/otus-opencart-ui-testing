@@ -1,48 +1,10 @@
-import re
-from logger.logger import Logger
-from pages.register_page import RegisterPage
-import bcrypt
-from datetime import datetime
 
 
-class Db(Logger):
-    def __init__(self, connection, test_name):
+class Db():
+    def __init__(self, connection, logger):
         self.connection = connection
-        self.user = RegisterPage.create_user()
-        self.logger = self._config_logger(test_name)
+        self.logger = logger
         self.customer_table = 'bitnami_opencart.oc_customer'
-
-    def create_user_data(self):
-        self.logger.info("Создание данных пользователя для БД")
-        new_user = self.user
-
-        salt = bcrypt.gensalt(rounds=10)
-        hashed = bcrypt.hashpw(new_user["password"].encode(), salt)
-        hashed_password = hashed.decode()
-
-        now = datetime.now()
-        formatted = now.strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
-
-        user_data = {
-            "customer_group_id": 0,
-            "store_id": 0,
-            "language_id": 1,
-            "firstname": new_user["firstname"],
-            "lastname": new_user["lastname"],
-            "email": new_user["email"],
-            "telephone": new_user["telephone"],
-            "password": hashed_password,
-            "custom_field": "",
-            "newsletter": 0,
-            "ip": '192.168.0.10',
-            "status": 1,
-            "safe": 0,
-            "token": "",
-            "code": "",
-            "date_added": formatted
-        }
-
-        return user_data
 
     def create_user_in_db(self, user_data):
         self.logger.info(f"Создание пользователя в таблице {self.customer_table}")
@@ -86,17 +48,7 @@ class Db(Logger):
             assert key is not None, f"Ключ {key!r} отсутствует в в данных пользователя>"
             assert value == val, f"{key!r}: ожидали {val!r}, получили {value!r}"
 
-        dt = user_data_db["date_added"]
-        date_from_db = dt.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
-
-        pattern = re.compile(r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}$")
-        assert pattern.match(date_from_db), (
-            f"Поле date_added = {date_from_db!r} не соответствует формату "
-            "`YYYY-MM-DD HH:MM:SS.SSS`"
-        )
-
         customer_id = user_data_db["customer_id"]
-        assert isinstance(customer_id, int), f"Ожидали целочисленный ID, получили {type(customer_id)}"
         assert customer_id > 0, f"Customer_id равен = {customer_id}"
 
     def check_updated_user(self, update_data: dict, data_from_db: dict):

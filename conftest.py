@@ -5,6 +5,11 @@ import pytest
 from selenium import webdriver
 import logging
 import allure
+from logger.logger import config_logger
+from db.db import Db
+import bcrypt
+from datetime import datetime
+from pages.register_page import RegisterPage
 
 
 def pytest_addoption(parser):
@@ -177,3 +182,44 @@ def connection(request):
 
     yield conn
     conn.close()
+
+@pytest.fixture
+def logger(request):
+    return config_logger(request.node.name)
+
+@pytest.fixture
+def db(connection, logger):
+    return Db(connection, logger)
+
+@pytest.fixture
+def user_data(logger):
+    logger.info("Создание данных пользователя для БД")
+    new_user = RegisterPage.create_user()
+
+    salt = bcrypt.gensalt(rounds=10)
+    hashed = bcrypt.hashpw(new_user["password"].encode(), salt)
+    hashed_password = hashed.decode()
+
+    now = datetime.now()
+    formatted = now.strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+
+    user_data = {
+        "customer_group_id": 0,
+        "store_id": 0,
+        "language_id": 1,
+        "firstname": new_user["firstname"],
+        "lastname": new_user["lastname"],
+        "email": new_user["email"],
+        "telephone": new_user["telephone"],
+        "password": hashed_password,
+        "custom_field": "",
+        "newsletter": 0,
+        "ip": '192.168.0.10',
+        "status": 1,
+        "safe": 0,
+        "token": "",
+        "code": "",
+        "date_added": formatted
+    }
+
+    return user_data
