@@ -1,8 +1,5 @@
 # сборка образа
-# docker build --no-cache -t opencart-tests .
-
-# команда для запуска тестов
-# docker run --rm   --network host   -v "$(pwd)/allure-results:/allure-results"   opencart-tests     --browser=chrome     --selenoid_url=http://localhost:4444/wd/hub     --browser_version=128.0
+# docker build --no-cache -t tests .
 
 FROM python:3.10-slim
 
@@ -32,6 +29,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# 6) ENTRYPOINT для pytest с передачей любых опций
 ENTRYPOINT ["pytest", "--alluredir=/allure-results"]
 CMD []
