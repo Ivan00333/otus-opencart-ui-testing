@@ -10,6 +10,8 @@ from db.db import Db
 import bcrypt
 from datetime import datetime
 from pages.register_page import RegisterPage
+from pymysql.cursors import DictCursor
+import pymysql
 
 
 def pytest_addoption(parser):
@@ -26,7 +28,7 @@ def pytest_addoption(parser):
     )
     parser.addoption(
         "--browser_version",
-        default = None,
+        default=None,
         help="Browser version to use (e.g. 124.0). If not set, Selenoid default is used."
     )
     parser.addoption(
@@ -71,6 +73,7 @@ def pytest_addoption(parser):
         default=False,
         help="Run browser with UI locally (headed). By default runs headless."
     )
+
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
