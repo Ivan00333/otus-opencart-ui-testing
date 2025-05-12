@@ -89,7 +89,9 @@ services:
     volumes:
       - ./:/app
     working_dir: /app
-    command: ./wait-for-it.sh opencart 8080 pytest -v tests/* --headless --base_url http://opencart:8080 --executor selenoid
+    entrypoint: ["./wait-for-it.sh", "opencart:8080", "--"]
+    command: ["pytest", "-v", "tests/", "--base_url", "http://opencart:8080"]
+#    command: ./wait-for-it.sh opencart 8080 pytest -v tests/* --headless --base_url http://opencart:8080 --executor selenoid
 
 networks:
   selenoid:

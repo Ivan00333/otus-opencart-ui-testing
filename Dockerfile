@@ -11,13 +11,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       chromium-driver \
       wget \
       ca-certificates \
+      tar \
+      netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
-RUN GECKO_TAG=$(wget -qO- https://api.github.com/repos/mozilla/geckodriver/releases/latest \
-         | grep '"tag_name"' \
-         | sed -E 's/.*"([^"]+)".*/\1/') \
-    && wget -qO /tmp/geckodriver.tar.gz \
-         "https://github.com/mozilla/geckodriver/releases/download/${GECKO_TAG}/geckodriver-${GECKO_TAG}-linux64.tar.gz" \
+ARG GECKO_VERSION=v0.33.0
+
+RUN wget -qO /tmp/geckodriver.tar.gz \
+      "https://github.com/mozilla/geckodriver/releases/download/${GECKO_VERSION}/geckodriver-${GECKO_VERSION}-linux64.tar.gz" \
     && tar -xzf /tmp/geckodriver.tar.gz -C /usr/local/bin \
     && rm /tmp/geckodriver.tar.gz
 
