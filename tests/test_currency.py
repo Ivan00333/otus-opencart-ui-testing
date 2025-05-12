@@ -7,8 +7,8 @@ from data.constants import Currency
 class TestCurrency:
     @allure.title("Проверка переключения валюты на главной странице")
     @pytest.mark.parametrize('currency', Currency.LIST_CURRENCY)
-    def test_currency(self, driver, currency):
-        page = HomePage(driver)
+    def test_currency(self, driver, currency, logger):
+        page = HomePage(driver, logger)
         page.open_home_page()
         page.choice_currency(currency)
         page.check_curency(currency)

@@ -6,4 +6,4 @@ from data.constants import Urls
 class ProductCardPage(BasePage):
     @allure.step("Открытие карточки продукта")
     def open_product_card_page(self):
-        self.open(Urls.URL_PRODUCT_CARD)
+        self.open(f"{self.driver.base_url}{Urls.URL_PRODUCT_CARD}")

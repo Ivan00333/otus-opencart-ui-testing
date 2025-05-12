@@ -16,7 +16,7 @@ class AddToCart(BasePage):
 
     @allure.step("Открытие домашней страницы")
     def open_home_page(self):
-        self.open(Urls.BASE_URL)
+        self.open(self.driver.base_url)
 
     @allure.step("Добавление товара в корзину")
     def add_product_to_cart(self):

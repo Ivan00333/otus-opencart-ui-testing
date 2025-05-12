@@ -8,7 +8,7 @@ from locators.locators import RegisterPageLocators as rpl
 class RegisterPage(BasePage):
     @allure.step("Открытие страницы регистрации")
     def open_register_page(self):
-        self.open(Urls.URL_REGISTER_PAGE)
+        self.open(f"{self.driver.base_url}{Urls.URL_REGISTER_PAGE}")
 
     @staticmethod
     @allure.step("Создание пользователя")

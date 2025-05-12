@@ -12,6 +12,7 @@ from datetime import datetime
 from pages.register_page import RegisterPage
 from pymysql.cursors import DictCursor
 import pymysql
+from data.constants import Urls
 
 
 def pytest_addoption(parser):
@@ -20,6 +21,11 @@ def pytest_addoption(parser):
         choices=["chrome", "firefox", "opera"],
         default="firefox",
         help="Browser to run tests: chrome, firefox, opera"
+    )
+    parser.addoption(
+        "--base_url",
+        default=Urls.BASE_URL,
+        help="Base URL of the application",
     )
     parser.addoption(
         "--selenoid_url",
@@ -98,6 +104,7 @@ def driver(pytestconfig, request):
     browser_version = pytestconfig.getoption("browser_version")
     record_video = pytestconfig.getoption("enable_video")
     headed = pytestconfig.getoption("headed")
+    base_url = pytestconfig.getoption("base_url")
 
     if browser_name == "chrome":
         options = webdriver.ChromeOptions()
@@ -145,6 +152,7 @@ def driver(pytestconfig, request):
 
     driver.test_name = request.node.name
     driver.log_level = logging.DEBUG
+    driver.base_url = base_url
 
     def teardown():
         if hasattr(request.node, "failed_tests") and request.node.failed_tests:
