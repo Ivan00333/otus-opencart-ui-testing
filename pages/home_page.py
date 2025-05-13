@@ -8,7 +8,7 @@ from selenium.webdriver.common.by import By
 class HomePage(BasePage):
     @allure.step("Открытие домашней страницы")
     def open_home_page(self):
-        self.open(Urls.BASE_URL)
+        self.open(self.driver.base_url)
 
     @allure.step("Проверка элемента {locator}")
     def check_element(self, locator):

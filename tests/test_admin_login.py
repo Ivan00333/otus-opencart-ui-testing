@@ -6,9 +6,9 @@ from pages.admin_page import AdminPage
 
 class TestAdminLogin:
     @allure.title("Проверка авторизации администратора")
-    def test_admin_auth(self, driver):
-        admin_login_page = AdminLoginPage(driver)
-        admin_page = AdminPage(driver)
+    def test_admin_auth(self, driver, logger):
+        admin_login_page = AdminLoginPage(driver, logger)
+        admin_page = AdminPage(driver, logger)
         admin_login_page.open_admin_login_page()
         admin_login_page.admin_auth()
         admin_page.check_admin_auth()

@@ -8,9 +8,9 @@ from data.constants import Currency
 class TestCurrencyCatalog:
     @allure.title("Проверка валюты в каталоге")
     @pytest.mark.parametrize('currency', Currency.LIST_CURRENCY)
-    def test_catalog_currency(self, driver, currency):
-        page = CatalogPage(driver)
-        home_page = HomePage(driver)
+    def test_catalog_currency(self, driver, currency, logger):
+        page = CatalogPage(driver, logger)
+        home_page = HomePage(driver, logger)
         page.open_catalog()
         home_page.choice_currency(currency)
         page.check_catalog_currency(currency)

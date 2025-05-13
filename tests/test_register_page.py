@@ -7,14 +7,14 @@ from locators.locators import RegisterPageLocators
 class TestRegisterPage:
     @allure.title("Проверка элементов формы регистрации")
     @pytest.mark.parametrize("locator", RegisterPageLocators.locators_list)
-    def test_check_visible_register_page_elements(self, driver, locator):
-        page = RegisterPage(driver)
+    def test_check_visible_register_page_elements(self, driver, locator, logger):
+        page = RegisterPage(driver, logger)
         page.open_register_page()
         page.check_element_visible(locator)
 
     @allure.title("Регистрация пользователя")
-    def test_register_user(self, driver):
-        page = RegisterPage(driver)
+    def test_register_user(self, driver, logger):
+        page = RegisterPage(driver, logger)
         page.open_register_page()
         page.fill_registration_user_form()
         page.check_success_registration()

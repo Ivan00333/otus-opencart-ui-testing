@@ -7,7 +7,7 @@ from locators.locators import CatalogPageLocators
 class CatalogPage(BasePage):
     @allure.step("Открытие каталога")
     def open_catalog(self):
-        self.open(Urls.URL_CATALOG)
+        self.open(f"{self.driver.base_url}{Urls.URL_CATALOG}")
 
     @allure.step("Проверка что элемент {locator} есть в каталоге")
     def check_catalog_elements_visible(self, locator):
