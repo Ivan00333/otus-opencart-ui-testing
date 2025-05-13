@@ -1,6 +1,4 @@
 import json
-from pymysql.cursors import DictCursor
-import pymysql
 import pytest
 from selenium import webdriver
 import logging
@@ -19,7 +17,7 @@ def pytest_addoption(parser):
     parser.addoption(
         "--browser",
         choices=["chrome", "firefox", "opera"],
-        default="firefox",
+        default="chrome",
         help="Browser to run tests: chrome, firefox, opera"
     )
     parser.addoption(
@@ -79,7 +77,6 @@ def pytest_addoption(parser):
         default=False,
         help="Run browser with UI locally (headed). By default runs headless."
     )
-
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
@@ -194,13 +191,16 @@ def connection(request):
     yield conn
     conn.close()
 
+
 @pytest.fixture
 def logger(request):
     return config_logger(request.node.name)
 
+
 @pytest.fixture
 def db(connection, logger):
     return Db(connection, logger)
+
 
 @pytest.fixture
 def user_data(logger):

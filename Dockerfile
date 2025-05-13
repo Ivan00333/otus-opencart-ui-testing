@@ -30,5 +30,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-ENTRYPOINT ["pytest", "--alluredir=/allure-results"]
-CMD []
+CMD ["pytest", "-v", "--alluredir", "allure-results"]

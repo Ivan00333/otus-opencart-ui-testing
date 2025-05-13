@@ -30,7 +30,7 @@ services:
       - '8081:8080'
       - '443:8443'
     environment:
-      - OPENCART_HOST=127.0.0.1:8081
+      - OPENCART_HOST=opencart:8080
       - OPENCART_DATABASE_HOST=mariadb
       - OPENCART_DATABASE_PORT_NUMBER=3306
       - OPENCART_DATABASE_USER=bn_opencart
@@ -52,7 +52,7 @@ services:
     ports:
       - 4444:4444
     volumes:
-      - ./selenoid/browsers.json:/etc/selenoid/browsers.json:ro
+      - ./selenoid/browsers.json:/etc/selenoid/browsers.json
       - /var/run/docker.sock:/var/run/docker.sock
     command: [
       "-conf=/etc/selenoid/browsers.json",
@@ -83,15 +83,24 @@ services:
       dockerfile: Dockerfile
     container_name: tests
     depends_on:
+      - mariadb
+      - opencart
       - selenoid
     networks:
       - selenoid
     volumes:
       - ./:/app
     working_dir: /app
-    entrypoint: ["./wait-for-it.sh", "opencart:8080", "--"]
-    command: ["pytest", "-v", "tests/", "--base_url", "http://opencart:8080"]
-#    command: ./wait-for-it.sh opencart 8080 pytest -v tests/* --headless --base_url http://opencart:8080 --executor selenoid
+    command:
+      - sh
+      - -c
+      - |
+        ./wait-for-it.sh mariadb 3306 && \
+        ./wait-for-it.sh opencart 8080 && \
+        pytest -v \
+          --db_host mariadb \
+          --db_port 3306 \
+          --base_url http://opencart:8080
 
 networks:
   selenoid:
