@@ -12,7 +12,7 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        git url: 'https://github.com/otus-opencart-ui-testing.git', branch: 'jenkins'
+        git url: 'https://github.com/Ivan00333/otus-opencart-ui-testing.git', branch: 'jenkins'
       }
     }
 
