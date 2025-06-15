@@ -22,9 +22,9 @@ pipeline {
       steps {
         sh 'docker compose up -d phpadmin mariadb opencart selenoid selenoid-ui'
         sh '''
-          ./wait-for-it.sh -s -t 60 mariadb:3306 &&
-          ./wait-for-it.sh -s -t 60 opencart:8080 &&
-          ./wait-for-it.sh -s -t 60 selenoid:4444
+          until nc -z mariadb 3306; do echo "Waiting for MariaDB..."; sleep 1; done
+          until nc -z opencart 8080; do echo "Waiting for OpenCart..."; sleep 1; done
+          until nc -z selenoid 4444; do echo "Waiting for Selenoid..."; sleep 1; done
         '''
       }
     }
