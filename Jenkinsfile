@@ -34,8 +34,6 @@ pipeline {
               --alluredir=allure-results \
               --selenoid_url=${params.SELENOID_URL} \
               --base_url=${params.BASE_URL} \
-              --db_host=mariadb \
-              --db_port=3306 \
               --browser=${params.BROWSER} \
               --browser_version=${params.BROWSER_VERSION} \
               -n ${params.THREADS}
