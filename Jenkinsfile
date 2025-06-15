@@ -20,7 +20,7 @@ pipeline {
 
    stage('Bring up stack') {
       steps {
-        sh 'docker-compose up -d phpadmin mariadb opencart selenoid selenoid-ui'
+        sh 'docker compose up -d phpadmin mariadb opencart selenoid selenoid-ui'
         sh '''
           ./wait-for-it.sh mariadb:3306 --strict --timeout=60 &&
           ./wait-for-it.sh opencart:8080 --strict --timeout=60 &&
