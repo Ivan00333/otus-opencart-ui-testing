@@ -32,6 +32,7 @@ pipeline {
           docker run --rm \
             --network selenoid \
             -v \$WORKSPACE/allure-results:/app/allure-results \
+            -v \$WORKSPACE/reports:/app/reports \
             tests pytest -v \
               --alluredir=allure-results \
               --junitxml=reports/junit.xml
