@@ -34,6 +34,7 @@ pipeline {
             -v \$WORKSPACE/allure-results:/app/allure-results \
             tests pytest -v \
               --alluredir=allure-results \
+              --junitxml=reports/junit.xml
               --selenoid_url=${params.SELENOID_URL} \
               --base_url=${params.BASE_URL} \
               --db_host=${params.DB_HOST} \
@@ -47,7 +48,7 @@ pipeline {
 
     stage('Publish Allure Report') {
       steps {
-        allure includeProperties: false, jdk: '', results: [[path: 'allure-results']]
+        allure includeProperties: false, jdk: 'allure', results: [[path: 'allure-results']]
       }
     }
   }
