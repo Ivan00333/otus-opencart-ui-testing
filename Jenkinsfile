@@ -47,14 +47,15 @@ pipeline {
 
     stage('Publish Allure Report') {
       steps {
-        allure includeProperties: false, results: [[path: 'allure-results']]
+        allure includeProperties: false, jdk: '', results: [[path: 'allure-results']]
       }
     }
   }
 
   post {
     always {
-      archiveArtifacts artifacts: 'allure-results/**', allowEmptyArchive: true
+      archiveArtifacts artifacts: 'reports/junit.xml', fingerprint: true
+      junit 'reports/junit.xml'
     }
   }
 }
