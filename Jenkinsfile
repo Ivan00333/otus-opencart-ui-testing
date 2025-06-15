@@ -32,10 +32,8 @@ pipeline {
           docker run --rm \
             --network selenoid \
             -v \$WORKSPACE/allure-results:/app/allure-results \
-            -v \$WORKSPACE/reports:/app/reports \
             tests pytest -v \
               --alluredir=allure-results \
-              --junitxml=reports/junit.xml
               --selenoid_url=${params.SELENOID_URL} \
               --base_url=${params.BASE_URL} \
               --db_host=${params.DB_HOST} \
@@ -49,15 +47,14 @@ pipeline {
 
     stage('Publish Allure Report') {
       steps {
-        allure includeProperties: false, jdk: 'allure', results: [[path: 'allure-results']]
+        allure includeProperties: false, results: [[path: 'allure-results']]
       }
     }
   }
 
   post {
     always {
-      archiveArtifacts artifacts: 'reports/junit.xml', fingerprint: true
-      junit 'reports/junit.xml'
+      archiveArtifacts artifacts: 'allure-results/**', allowEmptyArchive: true
     }
   }
 }
