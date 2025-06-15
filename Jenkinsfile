@@ -3,10 +3,8 @@ pipeline {
 
   parameters {
     string(name: 'SELENOID_URL', defaultValue: 'http://selenoid:4444/wd/hub', description: 'URL Selenoid')
-    string(name: 'BASE_URL', defaultValue: 'http://opencart:8080',         description: 'Адрес Opencart')
-    string(name: 'DB_HOST',  defaultValue: 'mariadb',                   description: 'Хост БД')
-    string(name: 'DB_PORT',  defaultValue: '3306',                       description: 'Порт БД')
-    choice(name: 'BROWSER',  choices: ['chrome','firefox','opera'],     description: 'Браузер для тестов')
+    string(name: 'BASE_URL',     defaultValue: 'http://opencart:8080',         description: 'Адрес Opencart')
+    choice(name: 'BROWSER',      choices: ['chrome','firefox','opera'],     description: 'Браузер для тестов')
     string(name: 'BROWSER_VERSION', defaultValue: '',                      description: 'Версия браузера')
     string(name: 'THREADS',      defaultValue: '1',                         description: 'Кол-во потоков pytest-xdist')
   }
@@ -18,50 +16,34 @@ pipeline {
       }
     }
 
-   stage('Bring up stack') {
+    stage('Build Docker Image') {
       steps {
-        sh 'docker compose up -d phpadmin mariadb opencart selenoid selenoid-ui'
-        sh '''
-          until nc -z mariadb 3306; do echo "Waiting for MariaDB..."; sleep 1; done
-          until nc -z opencart 8080; do echo "Waiting for OpenCart..."; sleep 1; done
-          until nc -z selenoid 4444; do echo "Waiting for Selenoid..."; sleep 1; done
-        '''
+        sh 'docker build -t tests .'
+        sh 'docker version'
       }
     }
 
-    stage('Run tests via Compose') {
+    stage('Run Tests') {
       steps {
-        sh 'mkdir -p allure-results'
+        // пробрасываем WORKSPACE, подключаем сеть, чтобы резолвились имена сервисов
         sh """
-          docker-compose run --rm \
-            -e SELENOID_URL=${params.SELENOID_URL} \
-            -e BASE_URL=${params.BASE_URL} \
-            -e DB_HOST=${params.DB_HOST} \
-            -e DB_PORT=${params.DB_PORT} \
-            -e BROWSER=${params.BROWSER} \
-            -e BROWSER_VERSION=${params.BROWSER_VERSION} \
-            -e THREADS=${params.THREADS} \
+          docker run --rm \
+            --network selenoid \
+            -v \$WORKSPACE/allure-results:/app/allure-results \
             tests pytest -v \
               --alluredir=allure-results \
-              --selenoid_url=\$SELENOID_URL \
-              --base_url=\$BASE_URL \
-              --db_host=\$DB_HOST \
-              --db_port=\$DB_PORT \
-              --browser=\$BROWSER \
-              --browser_version=\$BROWSER_VERSION \
-              -n \$THREADS
+              --selenoid_url=${params.SELENOID_URL} \
+              --base_url=${params.BASE_URL} \
+              --browser=${params.BROWSER} \
+              --browser_version=${params.BROWSER_VERSION} \
+              -n ${params.THREADS}
         """
-      }
-    }
-
-    stage('Tear down stack') {
-      steps {
-        sh 'docker-compose down --remove-orphans'
       }
     }
 
     stage('Publish Allure Report') {
       steps {
+        // плагин Allure Jenkins Plugin
         allure includeProperties: false, results: [[path: 'allure-results']]
       }
     }
