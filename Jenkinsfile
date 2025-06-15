@@ -27,7 +27,7 @@ pipeline {
 
     stage('Run Tests') {
       steps {
-        // пробрасываем WORKSPACE, подключаем сеть, чтобы резолвились имена сервисов
+        sh 'mkdir -p $WORKSPACE/allure-results'
         sh """
           docker run --rm \
             --network selenoid \
@@ -47,7 +47,6 @@ pipeline {
 
     stage('Publish Allure Report') {
       steps {
-        // плагин Allure Jenkins Plugin
         allure includeProperties: false, results: [[path: 'allure-results']]
       }
     }
