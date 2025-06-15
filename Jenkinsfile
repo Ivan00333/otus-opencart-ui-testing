@@ -2,11 +2,13 @@ pipeline {
   agent any
 
   parameters {
-    string(name: 'SELENOID_URL', defaultValue: 'http://selenoid:4444/wd/hub', description: 'URL Selenoid')
-    string(name: 'BASE_URL',     defaultValue: 'http://opencart:8080',         description: 'Адрес Opencart')
-    choice(name: 'BROWSER',      choices: ['chrome','firefox','opera'],     description: 'Браузер для тестов')
-    string(name: 'BROWSER_VERSION', defaultValue: '',                      description: 'Версия браузера')
-    string(name: 'THREADS',      defaultValue: '1',                         description: 'Кол-во потоков pytest-xdist')
+    string(name: 'SELENOID_URL',    defaultValue: 'http://selenoid:4444/wd/hub', description: 'URL Selenoid')
+    string(name: 'BASE_URL',        defaultValue: 'http://opencart:8080',        description: 'Адрес Opencart')
+    string(name: 'DB_HOST',         defaultValue: 'mariadb',                     description: 'Хост БД')
+    string(name: 'DB_PORT',         defaultValue: '3306',                       description: 'Порт БД')
+    choice(name: 'BROWSER',         choices: ['chrome','firefox','opera'],      description: 'Браузер для тестов')
+    string(name: 'BROWSER_VERSION', defaultValue: '',                           description: 'Версия браузера')
+    string(name: 'THREADS',         defaultValue: '1',                          description: 'Кол-во потоков pytest-xdist')
   }
 
   stages {
@@ -34,6 +36,8 @@ pipeline {
               --alluredir=allure-results \
               --selenoid_url=${params.SELENOID_URL} \
               --base_url=${params.BASE_URL} \
+              --db_host=${params.DB_HOST} \
+              --db_port=${params.DB_PORT} \
               --browser=${params.BROWSER} \
               --browser_version=${params.BROWSER_VERSION} \
               -n ${params.THREADS}
